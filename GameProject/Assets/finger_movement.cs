@@ -2,19 +2,30 @@ using UnityEngine;
 
 public class CircleFollowTouch : MonoBehaviour
 {
-    public Camera mainCamera;  // Assign the main camera in the Inspector
+    public Camera mainCamera;
+
+    private void Set_Sprite_Position_From_Input_Position(Vector2 input_position)
+    {
+        Vector3 touchPosition = mainCamera.ScreenToWorldPoint(new Vector3(input_position.x, input_position.y, 0));
+
+        transform.position = new Vector3(touchPosition.x, touchPosition.y, transform.position.z);
+    }
+
+    private void Start()
+    {
+    }
 
     private void Update()
     {
         if (Input.touchCount > 0)
         {
-            Touch touch = Input.GetTouch(0);  // Get the first touch
+            UnityEngine.Touch touch = Input.GetTouch(0);
 
-            // Convert screen touch position to world position
-            Vector3 touchPosition = mainCamera.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, mainCamera.nearClipPlane));
-
-            // Set the circle position, ensuring Z remains unchanged
-            transform.position = new Vector3(touchPosition.x, touchPosition.y, transform.position.z);
+            Set_Sprite_Position_From_Input_Position(touch.position);
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            Set_Sprite_Position_From_Input_Position(Input.mousePosition);
         }
     }
 }
